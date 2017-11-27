@@ -3,7 +3,6 @@ import './App.css';
 import Navbar from './components/Navbar';
 import Search from './components/Search';
 
-
 class App extends Component {
 
   constructor(props) {
@@ -48,7 +47,7 @@ class App extends Component {
     if (isAuthorized) {
       this.defineRequest();
     } else {
-      this.state.googleAuth.signIn();      
+      this.state.googleAuth.signIn();
     }
   }
 
