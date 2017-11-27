@@ -1,7 +1,7 @@
 const query = (state = '', action) => {
   switch (action.type) {
     case 'SNAP_SEARCHED':
-      return action.search;
+      return action.payload;
     default:
       return state;
   }

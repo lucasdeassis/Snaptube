@@ -1,8 +1,16 @@
-const snapSearchAction = (text) => {
+const searchSnap = (text) => {
   return {
-    type: 'SNAP_SEARCHED',
-    search: text
+    type: 'SEARCH_SNAP',
+    payload: text
   }
 }
 
-export default snapSearchAction;
+const addVideoSnap = (url, caption) => {
+  return {
+    type: 'ADD_VIDEO',
+    payload: url,
+    caption: caption
+  }
+}
+
+export { searchSnap, addVideoSnap };
