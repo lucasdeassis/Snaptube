@@ -1,8 +1,15 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
 import './index.css';
 import App from './components/App';
 import { createStore } from 'redux';
-import query from './reducers/reducer_snap_query';
+import rootReducer from './reducers/index';
+import { Provider } from 'react-redux';
 
-ReactDOM.render(<App store={createStore(query)} />, document.getElementById('root'));
+let store = createStore(rootReducer)
+
+render(
+  <Provider store={store}>
+    <App />
+  </Provider >,
+  document.getElementById('root'));

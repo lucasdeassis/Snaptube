@@ -1,5 +1,5 @@
 import deepFreeze from 'deep-freeze';
-import { addVideoSnap } from '../actions/index';
+import { addVideoSnap, filterVideos } from '../actions/index';
 import { createStore } from 'redux';
 import videos from './reducer_videos';
 
@@ -51,4 +51,27 @@ test('gets default state term on create store', () => {
   const initialState = [];
 
   expect(store.getState()).toEqual(initialState);
+});
+
+test('gets single object list state on filter action', () => {
+  const stateBefore = [{
+    url: 'v23dsG3dfdgh23',
+    caption: `0:00:07.799,0:00:10.559 how to walk on a leash without pulling`
+  },
+  {
+    url: '_3UBgFKyl90',
+    caption: `0:08:38.169,0:08:41.860
+    farther and farther away they don't tend`
+  }];
+
+  const action = filterVideos('v23dsG3dfdgh23');
+  const stateAfter = [{
+    url: 'v23dsG3dfdgh23',
+    caption: `0:00:07.799,0:00:10.559 how to walk on a leash without pulling`
+  }];
+
+  deepFreeze(stateBefore);
+  deepFreeze(action);
+
+  expect(videos(stateBefore, action)).toEqual(stateAfter);
 });
