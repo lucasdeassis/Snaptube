@@ -1,9 +1,9 @@
 import query from './reducer_snap_query';
 import deepFreeze from 'deep-freeze';
-import searchSnap from '../actions/index';
 import { createStore } from 'redux';
+import { searchSnap } from '../actions/index';
 
-test('gets new search term', () => {
+test('search term', () => {
   const stateBefore = '';
   const action = searchSnap('you shall not pass');
   const stateAfter = 'you shall not pass';

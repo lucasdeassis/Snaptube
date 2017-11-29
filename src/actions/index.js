@@ -1,4 +1,4 @@
-export const searchSnap = text => {
+export const searchSnap = (text) => {
   return {
     type: 'SEARCH_SNAP',
     payload: text
@@ -15,9 +15,21 @@ export const addVideoSnap = (url, caption) => {
   }
 }
 
+export const addVideoCaption = (url, caption) => {
+  return {
+    type: 'ADD_VIDEO_CAPTION',
+    payload: {
+      url,
+      caption
+    }
+  }
+}
+
 export const filterVideos = (url) => {
   return {
     type: 'FILTER_VIDEOS',
-    payload: url
+    payload: {
+      url
+    }
   }
 }

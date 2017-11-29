@@ -1,5 +1,5 @@
 import deepFreeze from 'deep-freeze';
-import { addVideoSnap, filterVideos } from '../actions/index';
+import { addVideoSnap, filterVideos, addVideoCaption } from '../actions/index';
 import { createStore } from 'redux';
 import videos from './reducer_videos';
 
@@ -26,6 +26,50 @@ test('add new video with empty caption', () => {
     url: 'v23dsG3dfdgh23',
     caption: ``
   }];
+  deepFreeze(stateBefore);
+  deepFreeze(action);
+
+  expect(videos(stateBefore, action)).toEqual(stateAfter);
+});
+
+test('add caption to existing video', () => {
+  const action = new addVideoCaption('_3UBgFKyl90', `0:08:38.169,0:08:41.860
+      farther and farther away they don't tend`);
+
+  const stateBefore = [
+    {
+      url: 'v23dsG3dfdgh23',
+      caption: `0:00:07.799,0:00:10.559
+      how to walk on a leash without pulling`
+    },
+    {
+      url: '_3UBgFKyl90',
+      caption: ``
+    },
+    {
+      url: '_23fsHGdxzw9',
+      caption: `0:00:12.420,0:00:15.719
+      click Subscribe right now that way`
+    }
+  ];
+  const stateAfter = [
+    {
+      url: 'v23dsG3dfdgh23',
+      caption: `0:00:07.799,0:00:10.559
+      how to walk on a leash without pulling`
+    },
+    {
+      url: '_3UBgFKyl90',
+      caption: `0:08:38.169,0:08:41.860
+      farther and farther away they don't tend`
+    },
+    {
+      url: '_23fsHGdxzw9',
+      caption: `0:00:12.420,0:00:15.719
+      click Subscribe right now that way`
+    }
+  ];
+
   deepFreeze(stateBefore);
   deepFreeze(action);
 
