@@ -1,11 +1,33 @@
+import YTSearch from 'youtube-api-search';
 let googleAuth = {};
 let callback;
 
 const youtubeOauth2 = {
   load: () => {
     window.gapi.load('client', start);
-  }
-
+  },
+  searchVideo: (term, callback) => {
+    YTSearch({ key: 'AIzaSyBsSxXHTV-VudZeNMaAFgSy6kZCH8r4ppU', term: term }, videos => {
+      callback(videos);
+    });
+  },
+  searchCaption: (captionsId) => {
+    // 3. Initialize and make the API request.
+    window.gapi.client.request({
+      'method': 'GET',
+      'path': 'https://www.googleapis.com/youtube/v3/captions/' + captionsId,
+      'params': {
+        'tfmt': 'sbv'
+      }
+    }).then((response) => {
+      console.log(response.body);
+      callback(response.body);
+    }, (reason) => {
+      console.log('Error: ' + reason.result.error.message);
+      callback('');
+    });
+  },
+  isAuthorized: false,
 }
 
 const start = () => {
@@ -33,31 +55,13 @@ const updateSigninStatus = (isSignedIn) => {
 
 const setSigninStatus = () => {
   const user = googleAuth.currentUser.get();
-  const isAuthorized = user.hasGrantedScopes('https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/youtubepartner');
+  youtubeOauth2.isAuthorized = user.hasGrantedScopes('https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/youtubepartner');
   // Toggle button text and displayed statement based on current auth status.
-  if (!isAuthorized) {
+  if (!youtubeOauth2.isAuthorized) {
     // defineRequest();
     // } else {
     googleAuth.signIn();
   }
-};
-
-const defineRequest = (captionsId) => {
-  // 3. Initialize and make the API request.
-  window.gapi.client.request({
-    'method': 'GET',
-    'path': 'https://www.googleapis.com/youtube/v3/captions/' + captionsId,
-    'params': {
-      'tfmt': 'sbv'
-    }
-  }).then((response) => {
-    console.log(response.body);
-    callback(response.body);
-  }, (reason) => {
-    console.log('Error: ' + reason.result.error.message);
-    callback('');
-  });
-
 };
 
 export default youtubeOauth2;

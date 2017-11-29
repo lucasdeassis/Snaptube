@@ -5,7 +5,7 @@ import Navbar from './Navbar';
 import Search from './Search';
 import youtubeOauth2 from '../youtube_oauth2';
 import VideoList from './Video_list';
-
+import VideoDetail from './Video_detail';
 
 class App extends Component {
 
@@ -20,8 +20,12 @@ class App extends Component {
     youtubeOauth2.load();
   }
 
+  callbackSearch = (videosAPI) => {
+    this.props.videos = videosAPI;
+  }
+
   render() {
-    const { query, videos } = this.props;
+    const { videos } = this.props;
 
     return (
       <div className="App">
@@ -32,7 +36,7 @@ class App extends Component {
           To find the video part you want, just type the matching audio track.
         </p>
 
-        <Search />
+        <Search onSearch={query => youtubeOauth2.searchVideo(query, this.callbackSearch)} disabled={youtubeOauth2.isAuthorized} />
         <VideoDetail video={this.state.selectedVideo} />
         <VideoList
           onVideoSelect={selectedVideo => this.setState({ selectedVideo })}

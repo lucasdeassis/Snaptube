@@ -1,5 +1,5 @@
 import React from "react";
-import { filterVideos } from '../actions/index';
+import { connect } from 'react-redux';
 
 const VideoDetail = (props) => {
   const { video } = props.video;
@@ -9,7 +9,7 @@ const VideoDetail = (props) => {
   }
 
   if (!video) {
-    return <div>Loading...</div>;
+    return <div></div>;
   }
 
   const videoId = video.id.videoId;
@@ -30,7 +30,7 @@ const VideoDetail = (props) => {
     // get separated hours minutes and sec
     captionTime = captionTime.split(':');
 
-    return captionTime[0] * 3600 + captionTime[1] * 60 + parseInt(captionTime[2])
+    return (captionTime[0] * 3600 + captionTime[1] * 60 + parseInt(captionTime[2]))
   }
 
   const url = `https://www.youtube.com/embed/${videoId}?start=${snapStartTime()}`;
@@ -38,7 +38,7 @@ const VideoDetail = (props) => {
   return (
     <div className="video-detail col-md-8">
       <div className="embed-responsive embed-responsive-16by9">
-        <iframe className="embed-responsive-item" src={url} />
+        <iframe title="video embed" className="embed-responsive-item" src={url} />
       </div>
       <div className="details">
         <div>{video.snippet.title}</div>
@@ -52,7 +52,6 @@ const VideoDetail = (props) => {
 const mapStateToProps = (state, ownProps) => {
   return {
     videos: state.videos
-    // videos: dispatch(filterVideos(ownProps.video))
   };
 }
 

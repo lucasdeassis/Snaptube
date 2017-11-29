@@ -16,8 +16,8 @@ const Search = (props) => {
           aria-label="Search for..." />
 
         <span className="input-group-btn">
-          <button
-            onClick={() => props.searchSnap(input.value)}
+          <button disabled={props.disabled}
+            onClick={() => props.onSearch(input.value)}
             className="btn btn-secondary"
             type="button">Search!</button>
         </span>
