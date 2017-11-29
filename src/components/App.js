@@ -6,6 +6,7 @@ import Search from './Search';
 import youtubeOauth2 from '../youtube_oauth2';
 import VideoList from './Video_list';
 import VideoDetail from './Video_detail';
+import { addVideoSnap } from '../actions/index';
 
 class App extends Component {
 
@@ -20,8 +21,14 @@ class App extends Component {
     youtubeOauth2.load();
   }
 
-  callbackSearch = (videosAPI) => {
-    this.props.videos = videosAPI;
+  callbackSearch = (query) => {
+    youtubeOauth2.searchVideo(query, videos => {
+      videos.forEach(video => {
+        console.log(video + '___________\n');
+
+        this.props.dispatch(addVideoSnap(video.id.videoId));
+      })
+    });
   }
 
   render() {
@@ -36,7 +43,8 @@ class App extends Component {
           To find the video part you want, just type the matching audio track.
         </p>
 
-        <Search onSearch={query => youtubeOauth2.searchVideo(query, this.callbackSearch)} disabled={youtubeOauth2.isAuthorized} />
+        <Search onSearch={query => this.callbackSearch(query)}
+          disabled={youtubeOauth2.isAuthorized} />
         <VideoDetail video={this.state.selectedVideo} />
         <VideoList
           onVideoSelect={selectedVideo => this.setState({ selectedVideo })}

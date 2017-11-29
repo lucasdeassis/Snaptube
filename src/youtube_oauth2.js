@@ -7,9 +7,7 @@ const youtubeOauth2 = {
     window.gapi.load('client', start);
   },
   searchVideo: (term, callback) => {
-    YTSearch({ key: 'AIzaSyBsSxXHTV-VudZeNMaAFgSy6kZCH8r4ppU', term: term }, videos => {
-      callback(videos);
-    });
+    YTSearch({ key: 'AIzaSyBsSxXHTV-VudZeNMaAFgSy6kZCH8r4ppU', term: term }, callback);
   },
   searchCaption: (captionsId) => {
     // 3. Initialize and make the API request.
