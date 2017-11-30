@@ -48,7 +48,18 @@ const executeRequest = (request) => {
 };
 
 const oauth2 = {
-  start: () => {
+  setSigninStatus: () => {
+    const user = googleAuth.currentUser.get();
+    youtubeApi.isAuthorized = user.hasGrantedScopes('https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/youtubepartner');
+    // enable button based on current auth status.
+    if (!youtubeApi.isAuthorized) {
+      googleAuth.signIn();
+    }
+  },
+  updateSigninStatus: (isSignedIn) => {
+    this.setSigninStatus();
+  },
+  start: (updateSignIn, setSignIn) => {
     // 2. Initialize the JavaScript client library.
     window.gapi.client.init({
       'apiKey': 'AIzaSyBsSxXHTV-VudZeNMaAFgSy6kZCH8r4ppU',
@@ -59,23 +70,13 @@ const oauth2 = {
       googleAuth = window.gapi.auth2.getAuthInstance();
 
       // Listen for sign-in state changes.
-      googleAuth.isSignedIn.listen(this.updateSigninStatus);
+      googleAuth.isSignedIn.listen(updateSignIn);
 
       // Handle initial sign-in state. (Determine if user is already signed in.)
-      this.setSigninStatus();
+      setSignIn();
     });
-  },
-  updateSigninStatus: (isSignedIn) => {
-    this.setSigninStatus();
-  },
-  setSigninStatus: () => {
-    const user = googleAuth.currentUser.get();
-    youtubeApi.isAuthorized = user.hasGrantedScopes('https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/youtubepartner');
-    // enable button based on current auth status.
-    if (!youtubeApi.isAuthorized) {
-      googleAuth.signIn();
-    }
   }
+
 }
 
 
@@ -87,7 +88,7 @@ const youtubeApi = {
   isAuthorized: false,
 
   load: () => {
-    window.gapi.load('client', oauth2.start);
+    window.gapi.load('client', () => oauth2.start(oauth2.updateSigninStatus, oauth2.setSigninStatus));
   },
 
   searchVideo: (term, callback) => {
@@ -96,7 +97,7 @@ const youtubeApi = {
 
   searchVideoCaptions: (videoId) => {
     return apiRequest('GET',
-      '/youtube/v3/captions',
+      'https://www.googleapis.com/youtube/v3/captions',
       {
         'part': 'snippet',
         'videoId': videoId,
@@ -109,17 +110,6 @@ const youtubeApi = {
     return apiRequest('GET',
       'https://www.googleapis.com/youtube/v3/captions/' + captionsId,
       { 'tfmt': 'sbv' });
-    // window.gapi.client.request({
-    //   'method': 'GET',
-    //   'path': 'https://www.googleapis.com/youtube/v3/captions/' + captionsId,
-    //   'params': {
-    //     'tfmt': 'sbv'
-    //   }
-    // }).then((response) => {
-    //   console.log(response.body);
-    // }, (reason) => {
-    //   console.log('Error: ' + reason.result.error.message);
-    // });
   }
 };
 

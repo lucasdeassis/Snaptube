@@ -1,33 +1,50 @@
-import React from 'react';
+import React, { Component } from 'react';
 import './Search.css';
 import { connect } from 'react-redux';
 import { searchSnap } from '../actions/index';
 
-const Search = (props) => {
-  let input;
+class Search extends Component {
+  constructor(props) {
+    super(props);
 
-  return (
-    <div className="col-lg-6 offset-lg-3">
-      <div className="input-group">
-        <input type="search"
-          ref={node => { input = node }}
-          className="form-control"
-          placeholder="people from phoenix are phoenicians"
-          aria-label="Search for..." />
+    this.state = {
+      input: ''
+    }
 
-        <span className="input-group-btn">
-          <button disabled={props.disabled}
-            onClick={() => props.onSearch(input.value)}
-            className="btn btn-secondary"
-            type="button">Search!</button>
-        </span>
+  }
+  handleChange = (e) => {
+    this.setState({
+      input : e.target.value
+    });
+  }
+
+  render() {
+
+    return (
+      <div className="col-lg-6 offset-lg-3">
+        <div className="input-group">
+          <input type="search"
+            value={this.state.input}
+            onChange={this.handleChange}
+            className="form-control"
+            placeholder="people from phoenix are phoenicians"
+            aria-label="Search for..." />
+
+          <span className="input-group-btn">
+            <button disabled={this.props.disabled || !this.state.input}
+              onClick={() => this.props.onSearch(this.state.input)}
+              className="btn btn-secondary"
+              type="button">Search!</button>
+          </span>
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+
+}
 
 const mapStateToProps = (state) => {
-  console.log(state);
+  // console.log(state);
 
   return {
     query: state.query,

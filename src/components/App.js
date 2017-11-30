@@ -6,14 +6,16 @@ import Search from './Search';
 import youtubeApi from '../youtube_api';
 import VideoList from './Video_list';
 import VideoDetail from './Video_detail';
-import { addVideoSnap, addVideoCaption } from '../actions/index';
+import { addVideoSnap, addVideoCaption, searchSnap } from '../actions/index';
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      selectedVideo: {}
+      selectedVideo: {},
+      videos: [],
+      authorized: true
     }
 
     // 1. Load the JavaScript YOUTUBE client library.
@@ -21,11 +23,17 @@ class App extends Component {
   }
 
   searchVideo = (query) => {
-    youtubeApi.searchVideo(query, videos => {
-      videos.forEach(video => {
+    this.props.dispatch(searchSnap(query));
+
+    youtubeApi.searchVideo(query, videosFromSearch => {
+      videosFromSearch.forEach(video => {
         console.log(video + '___________\n');
         this.props.dispatch(addVideoSnap(video.id.videoId));
-      })
+      });
+
+      this.setState({
+        videos: videosFromSearch
+      });
     });
   }
 
@@ -39,7 +47,7 @@ class App extends Component {
 
             console.log(`caption content - ${response.body}`);
 
-            caption = this.extractCaptionFromResponseAndQuery(response.body, this.props.query);
+            caption = this.extractCaptionFromResponseAnd(response.body, this.props.query);
 
             this.props.dispatch(addVideoCaption(selectedVideo.id.videoId, caption));
 
@@ -66,8 +74,6 @@ class App extends Component {
   }
 
   render() {
-    const { videos } = this.props;
-
     return (
       <div className="App">
         <Navbar />
@@ -78,12 +84,12 @@ class App extends Component {
         </p>
 
         <Search onSearch={this.searchVideo}
-          disabled={youtubeApi.isAuthorized} />
+          disabled={!this.state.authorized} />
         <VideoDetail video={this.state.selectedVideo} />
         <VideoList
-          visible={videos.length > 0}
+          visible={this.state.videos.length > 0}
           onVideoSelect={this.searchVideoCaptions}
-          videos={videos}
+          videos={this.state.videos}
         />
       </div>
     );
