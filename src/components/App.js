@@ -9,7 +9,7 @@ import VideoDetail from './Video_detail'
 import { addVideoSnap, addVideoCaption, searchSnap } from '../actions/index'
 
 class App extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -24,10 +24,10 @@ class App extends Component {
     youtubeApi.load()
   }
 
-  searchVideo (query) {
+  searchVideo(query) {
     this.props.dispatch(searchSnap(query))
 
-    youtubeApi.searchVideo(query, videosFromSearch => {
+    youtubeApi.searchVideo(query).then(videosFromSearch => {
       videosFromSearch.forEach(video => {
         console.log(video + '__________\n')
         this.props.dispatch(addVideoSnap(video.id.videoId))
@@ -36,32 +36,38 @@ class App extends Component {
       this.setState({
         videos: videosFromSearch
       })
+    }).catch((reason) => {
+      console.log('Error: ' + reason)
     })
   }
 
-  searchVideoCaptions (selectedVideo) {
+  searchVideoCaptions(selectedVideo) {
     youtubeApi.searchVideoCaptions(selectedVideo.id.videoId)
       .then((caption) => {
-        console.log(' video caption -' + caption)
-
-        youtubeApi.getCaption(caption.id)
-          .then(response => {
-            console.log(`caption content - ${response.body}`)
-
-            caption = this.extractCaptionFromApi(response.body, this.props.query)
-
-            this.props.dispatch(addVideoCaption(selectedVideo.id.videoId, caption))
-
-            this.setState({
-              selectedVideo
-            })
-          })
-      }, (reason) => {
+        caption = this.getCaption(caption.id, selectedVideo.id.videoId);
+      }).catch((reason) => {
         console.log('Error: ' + reason)
       })
   }
 
-  extractCaptionFromApi (captionsResponse) {
+  getCaption(captionId, selectedVideoId) {
+    youtubeApi.getCaption(captionId).then(captionSbv => {
+      console.log(`caption content - ${captionSbv}`);
+
+      caption = this.extractCaptionFromApi(captionSbv, this.props.query);
+
+      this.props.dispatch(addVideoCaption(selectedVideoId, captionId));
+
+      this.setState({
+        selectedVideo
+      });
+    }).catch((reason) => {
+      console.log('Error: ' + reason);
+    });
+    return caption;
+  }
+
+  extractCaptionFromApi(captionsResponse) {
     let captionList = captionsResponse.split(/\r?\n{2}/)
     const caption = captionList.find(cap => cap.includes(this.props.query)) || ''
     console.log(`caption from query - ${caption}`)
@@ -69,17 +75,17 @@ class App extends Component {
     return caption
   }
 
-  render () {
+  render() {
     return (
       <div className='App'>
         <Navbar />
 
         <p className='App-intro'>
-          Watch specific youtube video pieces
+          Watch specific youtube video pieces.
           To find the video part you want, just type the matching audio track.
         </p>
 
-        <Search onSearch={this.searchVideo}
+        <Search onSearchTermSubmit={this.searchVideo}
           disabled={!this.state.authorized} />
         <VideoDetail video={this.state.selectedVideo} />
         <VideoList

@@ -33,7 +33,7 @@ class Search extends Component {
 
           <span className='input-group-btn'>
             <button disabled={this.props.disabled || !this.state.input}
-              onClick={() => this.props.onSearch(this.state.input)}
+              onClick={() => this.props.onSearchTermSubmit(this.state.input)}
               className='btn btn-secondary'
               type='button'>Search!</button>
           </span>

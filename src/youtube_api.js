@@ -39,41 +39,39 @@ const apiRequest = (requestMethod, path, params, properties) => {
       'params': params
     })
   }
-  return executeRequest(request)
+
+  return request;
 }
 // six-month-old Nina learn how to walk on a leash without pulling
 
-const executeRequest = (request) => {
-  return request.execute()
-}
-
 const oauth2 = {
-  setSigninStatus: () => {
+  setSigninStatus() {
     const user = googleAuth.currentUser.get()
-    youtubeApi.isAuthorized = user.hasGrantedScopes('https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/youtubepartner')
+    youtubeApi.isAuthorized = user.hasGrantedScopes('https://www.googleapis.com/auth/youtubepartner')
     // enable button based on current auth status.
     if (!youtubeApi.isAuthorized) {
       googleAuth.signIn()
     }
   },
-  updateSigninStatus: (isSignedIn) => {
+  updateSigninStatus(isSignedIn) {
     this.setSigninStatus()
   },
-  start: (updateSignIn, setSignIn) => {
+  start() {
     // 2. Initialize the JavaScript client library.
     window.gapi.client.init({
       'apiKey': 'AIzaSyBsSxXHTV-VudZeNMaAFgSy6kZCH8r4ppU',
       // clientId and scope are optional if auth is not required.
+      'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest'],
       'clientId': '475996322746-fd6flkrafpmf0bvlat4pua3s75phf2o4.apps.googleusercontent.com',
-      'scope': 'https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/youtubepartner'
+      'scope': 'https://www.googleapis.com/auth/youtubepartner'
     }).then(() => {
       googleAuth = window.gapi.auth2.getAuthInstance()
 
       // Listen for sign-in state changes.
-      googleAuth.isSignedIn.listen(updateSignIn)
+      googleAuth.isSignedIn.listen(this.updateSigninStatus)
 
       // Handle initial sign-in state. (Determine if user is already signed in.)
-      setSignIn()
+      this.setSigninStatus()
     })
   }
 
@@ -87,29 +85,54 @@ const youtubeApi = {
   isAuthorized: false,
 
   load: () => {
-    window.gapi.load('client', () => oauth2.start(oauth2.updateSigninStatus, oauth2.setSigninStatus))
+    window.gapi.load('client:auth2', () => oauth2.start())
   },
 
   searchVideo: (term, callback) => {
-    YTSearch({ key: 'AIzaSyBsSxXHTV-VudZeNMaAFgSy6kZCH8r4ppU', term: term }, callback)
+    return new Promise((resolve, reject) => {
+      YTSearch({ key: 'AIzaSyBsSxXHTV-VudZeNMaAFgSy6kZCH8r4ppU', term: term }, (searchResult) => (
+        resolve(searchResult)
+      ))
+    })
   },
 
   searchVideoCaptions: (videoId) => {
-    return apiRequest('GET',
-      'https://www.googleapis.com/youtube/v3/captions',
-      {
-        'part': 'snippet',
-        'videoId': videoId,
-        'onBehalfOfContentOwner': ''
-      }).map(response => response.body.items.filter(caption => caption.snippet.language === 'en'))
+    const isEnglishCaption = (caption) => caption.snippet.language === 'en';
+    const isPortugueseCaption = (caption) => caption.snippet.language === 'pt';
+
+    return new Promise((resolve, reject) => {
+      const request = apiRequest('GET',
+        'https://www.googleapis.com/youtube/v3/captions',
+        {
+          'part': 'snippet',
+          'videoId': videoId,
+          'onBehalfOfContentOwner': ''
+        });
+
+      request.execute((captionsListResponse) => {
+        resolve(captionsListResponse.items.find(caption => isEnglishCaption(caption) || isPortugueseCaption(caption)))
+      })
+    })
   },
 
   getCaption: (captionsId) => {
-    // 3. Initialize and make the API request.
-    return apiRequest('GET',
-      'https://www.googleapis.com/youtube/v3/captions/' + captionsId,
-      { 'tfmt': 'sbv' })
+    return new Promise((resolve, reject) => {
+      const request = apiRequest('GET',
+        'youtube/v3/captions/' + captionsId,
+        {
+          'tfmt': 'sbv',
+          'onBehalfOfContentOwner': '',
+          'tlang': ''
+        })
+
+      // see https://developers.google.com/api-client-library/javascript/reference/referencedocs#gapiclientrequestargs
+      request.execute((jsonResponse, rawResponse) => {
+        const videoCaption = JSON.parse(rawResponse).gapiRequest.data.body
+        resolve(videoCaption)
+      })
+    })
   }
 }
 
 export default youtubeApi
+
