@@ -1,40 +1,40 @@
-import deepFreeze from 'deep-freeze';
-import { addVideoSnap, filterVideos, addVideoCaption } from '../actions/index';
-import { createStore } from 'redux';
-import videos from './reducer_videos';
+import deepFreeze from 'deep-freeze'
+import { addVideoSnap, filterVideos, addVideoCaption } from '../actions/index'
+import { createStore } from 'redux'
+import videos from './reducer_videos'
 
 test('add new video', () => {
-  const stateBefore = [];
+  const stateBefore = []
   const action = addVideoSnap('v23dsG3dfdgh23',
-    `0:00:07.799,0:00:10.559 how to walk on a leash without pulling`);
+    `0:00:07.799,0:00:10.559 how to walk on a leash without pulling`)
   const stateAfter = [{
     url: 'v23dsG3dfdgh23',
     caption: `0:00:07.799,0:00:10.559 how to walk on a leash without pulling`
-  }];
+  }]
 
-  deepFreeze(stateBefore);
-  deepFreeze(action);
+  deepFreeze(stateBefore)
+  deepFreeze(action)
 
-  expect(videos(stateBefore, action)).toEqual(stateAfter);
-});
+  expect(videos(stateBefore, action)).toEqual(stateAfter)
+})
 
 test('add new video with empty caption', () => {
-  const stateBefore = [];
-  const action = new addVideoSnap('v23dsG3dfdgh23', '');
+  const stateBefore = []
+  const action = addVideoSnap('v23dsG3dfdgh23', '')
 
   const stateAfter = [{
     url: 'v23dsG3dfdgh23',
     caption: ``
-  }];
-  deepFreeze(stateBefore);
-  deepFreeze(action);
+  }]
+  deepFreeze(stateBefore)
+  deepFreeze(action)
 
-  expect(videos(stateBefore, action)).toEqual(stateAfter);
-});
+  expect(videos(stateBefore, action)).toEqual(stateAfter)
+})
 
 test('add caption to existing video', () => {
-  const action = new addVideoCaption('_3UBgFKyl90', `0:08:38.169,0:08:41.860
-      farther and farther away they don't tend`);
+  const action = addVideoCaption('_3UBgFKyl90', `0:08:38.169,0:08:41.860
+      farther and farther away they don't tend`)
 
   const stateBefore = [
     {
@@ -51,7 +51,7 @@ test('add caption to existing video', () => {
       caption: `0:00:12.420,0:00:15.719
       click Subscribe right now that way`
     }
-  ];
+  ]
   const stateAfter = [
     {
       url: 'v23dsG3dfdgh23',
@@ -68,34 +68,34 @@ test('add caption to existing video', () => {
       caption: `0:00:12.420,0:00:15.719
       click Subscribe right now that way`
     }
-  ];
+  ]
 
-  deepFreeze(stateBefore);
-  deepFreeze(action);
+  deepFreeze(stateBefore)
+  deepFreeze(action)
 
-  expect(videos(stateBefore, action)).toEqual(stateAfter);
-});
+  expect(videos(stateBefore, action)).toEqual(stateAfter)
+})
 
 test('gets default state on unknown action', () => {
-  const stateBefore = [];
+  const stateBefore = []
   const action = {
     type: 'NO_KNOWN_TYPE',
     payload: `sqwd13edsf`
   }
-  const stateAfter = [];
+  const stateAfter = []
 
-  deepFreeze(stateBefore);
-  deepFreeze(action);
+  deepFreeze(stateBefore)
+  deepFreeze(action)
 
-  expect(videos(stateBefore, action)).toEqual(stateAfter);
-});
+  expect(videos(stateBefore, action)).toEqual(stateAfter)
+})
 
 test('gets default state term on create store', () => {
-  const store = createStore(videos);
-  const initialState = [];
+  const store = createStore(videos)
+  const initialState = []
 
-  expect(store.getState()).toEqual(initialState);
-});
+  expect(store.getState()).toEqual(initialState)
+})
 
 test('gets single object list state on filter action', () => {
   const stateBefore = [{
@@ -106,16 +106,16 @@ test('gets single object list state on filter action', () => {
     url: '_3UBgFKyl90',
     caption: `0:08:38.169,0:08:41.860
     farther and farther away they don't tend`
-  }];
+  }]
 
-  const action = filterVideos('v23dsG3dfdgh23');
+  const action = filterVideos('v23dsG3dfdgh23')
   const stateAfter = [{
     url: 'v23dsG3dfdgh23',
     caption: `0:00:07.799,0:00:10.559 how to walk on a leash without pulling`
-  }];
+  }]
 
-  deepFreeze(stateBefore);
-  deepFreeze(action);
+  deepFreeze(stateBefore)
+  deepFreeze(action)
 
-  expect(videos(stateBefore, action)).toEqual(stateAfter);
-});
+  expect(videos(stateBefore, action)).toEqual(stateAfter)
+})

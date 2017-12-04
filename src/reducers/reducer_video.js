@@ -4,19 +4,19 @@ const video = (state = {}, action) => {
       return {
         url: action.payload.url,
         caption: action.payload.caption
-      };
+      }
     case 'ADD_VIDEO_CAPTION':
       if (state.url !== action.payload.url) {
-        return state;
+        return state
       }
 
       return Object.assign({}, state, {
         caption: action.payload.caption
 
-      });
+      })
     default:
-      return state;
+      return state
   }
 }
 
-export default video;
+export default video

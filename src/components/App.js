@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import './App.css';
-import Navbar from './Navbar';
-import Search from './Search';
-import youtubeApi from '../youtube_api';
-import VideoList from './Video_list';
-import VideoDetail from './Video_detail';
-import { addVideoSnap, addVideoCaption, searchSnap } from '../actions/index';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import './App.css'
+import Navbar from './Navbar'
+import Search from './Search'
+import youtubeApi from '../youtube_api'
+import VideoList from './Video_list'
+import VideoDetail from './Video_detail'
+import { addVideoSnap, addVideoCaption, searchSnap } from '../actions/index'
 
 class App extends Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
 
     this.state = {
       selectedVideo: {},
@@ -18,68 +18,64 @@ class App extends Component {
       authorized: true
     }
 
+    this.searchVideo = this.searchVideo.bind(this)
+    this.searchVideoCaptions = this.searchVideoCaptions.bind(this)
     // 1. Load the JavaScript YOUTUBE client library.
-    youtubeApi.load();
+    youtubeApi.load()
   }
 
-  searchVideo = (query) => {
-    this.props.dispatch(searchSnap(query));
+  searchVideo (query) {
+    this.props.dispatch(searchSnap(query))
 
     youtubeApi.searchVideo(query, videosFromSearch => {
       videosFromSearch.forEach(video => {
-        console.log(video + '___________\n');
-        this.props.dispatch(addVideoSnap(video.id.videoId));
-      });
+        console.log(video + '__________\n')
+        this.props.dispatch(addVideoSnap(video.id.videoId))
+      })
 
       this.setState({
         videos: videosFromSearch
-      });
-    });
+      })
+    })
   }
 
-  searchVideoCaptions = (selectedVideo) => {
+  searchVideoCaptions (selectedVideo) {
     youtubeApi.searchVideoCaptions(selectedVideo.id.videoId)
       .then((caption) => {
-        console.log(' video caption -' + caption);
+        console.log(' video caption -' + caption)
 
         youtubeApi.getCaption(caption.id)
           .then(response => {
+            console.log(`caption content - ${response.body}`)
 
-            console.log(`caption content - ${response.body}`);
+            caption = this.extractCaptionFromApi(response.body, this.props.query)
 
-            caption = this.extractCaptionFromResponseAnd(response.body, this.props.query);
-
-            this.props.dispatch(addVideoCaption(selectedVideo.id.videoId, caption));
+            this.props.dispatch(addVideoCaption(selectedVideo.id.videoId, caption))
 
             this.setState({
               selectedVideo
-            });
-
+            })
           })
       }, (reason) => {
-        console.log('Error: ' + reason);
-      });
+        console.log('Error: ' + reason)
+      })
   }
 
-  searchCaption = (query, selectedVideo) => {
-    youtubeApi.searchCaption(selectedVideo)
+  extractCaptionFromApi (captionsResponse) {
+    let captionList = captionsResponse.split(/\r?\n{2}/)
+    const caption = captionList.find(cap => cap.includes(this.props.query)) || ''
+    console.log(`caption from query - ${caption}`)
+
+    return caption
   }
 
-  extractCaptionFromResponseAndQuery = (captionsResponse) => {
-    let captionList = captionsResponse.split(/\r?\n{2}/);
-    const caption = captionList.find(cap => cap.includes(this.props.query)) || '';
-    console.log(`caption from query - ${caption}`);
-
-    return caption;
-  }
-
-  render() {
+  render () {
     return (
-      <div className="App">
+      <div className='App'>
         <Navbar />
 
-        <p className="App-intro">
-          Watch specific youtube video pieces.
+        <p className='App-intro'>
+          Watch specific youtube video pieces
           To find the video part you want, just type the matching audio track.
         </p>
 
@@ -92,7 +88,7 @@ class App extends Component {
           videos={this.state.videos}
         />
       </div>
-    );
+    )
   }
 }
 
@@ -100,7 +96,7 @@ const mapStateToProps = (state) => {
   return {
     query: state.query,
     videos: state.videos
-  };
+  }
 }
 
-export default connect(mapStateToProps, null)(App);
+export default connect(mapStateToProps, null)(App)
