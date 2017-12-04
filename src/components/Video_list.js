@@ -11,9 +11,11 @@ const VideoList = props => {
   })
 
   return (
-    <ul className='col-md-4 list-group'>
-      {videoItems}
-    </ul>
+    <div className="video-list-group list-group align-items-center">
+      <ul className="col-lg-8 col-md-12">
+        {videoItems}
+      </ul>
+    </div>
   )
 }
 
