@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import './Search.css'
 import { connect } from 'react-redux'
 import { searchSnap } from '../actions/index'
+import _ from 'lodash'
 
 class Search extends Component {
   constructor (props) {
@@ -21,6 +22,8 @@ class Search extends Component {
   }
 
   render () {
+    const handleChangeDebounced = _.debounce( (term) => {this.handleChange}, 300)
+
     return (
       <div className='col-lg-6 offset-lg-3'>
         <div className='input-group'>

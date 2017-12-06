@@ -90,15 +90,23 @@ const youtubeApi = {
 
   searchVideo: (term, callback) => {
     return new Promise((resolve, reject) => {
-      YTSearch({ key: 'AIzaSyBsSxXHTV-VudZeNMaAFgSy6kZCH8r4ppU', term: term }, (searchResult) => (
-        resolve(searchResult)
-      ))
+      YTSearch({ key: 'AIzaSyBsSxXHTV-VudZeNMaAFgSy6kZCH8r4ppU', term: term }, (searchResult) => {
+        if (searchResult) {
+          resolve(searchResult)
+        } else {
+          reject(`No videos found for query - ${term}`)
+        }
+      })
     })
   },
 
   searchVideoCaptions: (videoId) => {
     const isEnglishCaption = (caption) => caption.snippet.language === 'en';
     const isPortugueseCaption = (caption) => caption.snippet.language === 'pt';
+
+    const captionInList = (captionsListResponse, isEnglishCaption, isPortugueseCaption) => {
+      return captionsListResponse.items.find(caption => isEnglishCaption(caption) || isPortugueseCaption(caption));
+    };
 
     return new Promise((resolve, reject) => {
       const request = apiRequest('GET',
@@ -110,7 +118,12 @@ const youtubeApi = {
         });
 
       request.execute((captionsListResponse) => {
-        resolve(captionsListResponse.items.find(caption => isEnglishCaption(caption) || isPortugueseCaption(caption)))
+        const caption = captionInList(captionsListResponse, isEnglishCaption, isPortugueseCaption);
+        if (caption) {
+          resolve(caption)
+        } else {
+          reject('No english or portuguese captions were found for this video.')
+        }
       })
     })
   },
@@ -127,7 +140,13 @@ const youtubeApi = {
 
       // see https://developers.google.com/api-client-library/javascript/reference/referencedocs#gapiclientrequestargs
       request.execute((jsonResponse, rawResponse) => {
-        const videoCaption = JSON.parse(rawResponse).gapiRequest.data.body
+        const response = JSON.parse(rawResponse).gapiRequest
+
+        if (response.data.status != 200) {
+          reject(response.data.body);
+        }
+
+        const videoCaption = response.data.body
         resolve(videoCaption)
       })
     })

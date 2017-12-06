@@ -7,6 +7,7 @@ import youtubeApi from '../youtube_api'
 import VideoList from './Video_list'
 import VideoDetail from './Video_detail'
 import { addVideoSnap, addVideoCaption, searchSnap } from '../actions/index'
+import query from '../reducers/reducer_snap_query';
 
 class App extends Component {
   constructor(props) {
@@ -44,19 +45,19 @@ class App extends Component {
   searchVideoCaptions(selectedVideo) {
     youtubeApi.searchVideoCaptions(selectedVideo.id.videoId)
       .then((caption) => {
-        caption = this.getCaption(caption.id, selectedVideo.id.videoId);
+        this.getCaption(caption.id, selectedVideo);
       }).catch((reason) => {
         console.log('Error: ' + reason)
       })
   }
 
-  getCaption(captionId, selectedVideoId) {
+  getCaption(captionId, selectedVideo) {
     youtubeApi.getCaption(captionId).then(captionSbv => {
       console.log(`caption content - ${captionSbv}`);
 
-      caption = this.extractCaptionFromApi(captionSbv, this.props.query);
+      const queryCaption = this.extractQueryCaptionFromApiCaption(captionSbv, this.props.query);
 
-      this.props.dispatch(addVideoCaption(selectedVideoId, captionId));
+      this.props.dispatch(addVideoCaption(selectedVideo.id.videoId, queryCaption));
 
       this.setState({
         selectedVideo
@@ -64,12 +65,23 @@ class App extends Component {
     }).catch((reason) => {
       console.log('Error: ' + reason);
     });
-    return caption;
   }
 
-  extractCaptionFromApi(captionsResponse) {
+  subqueryBySpace(query) {
+    const noSpaces = () => query.split(' ').length === 1;
+
+    if (noSpaces()) {
+      return query
+    } else {
+      return query.substring(0, query.lastIndexOf(' '));
+    }
+  }
+
+  extractQueryCaptionFromApiCaption(captionsResponse, query) {
     let captionList = captionsResponse.split(/\r?\n{2}/)
-    const caption = captionList.find(cap => cap.includes(this.props.query)) || ''
+
+    const caption = captionList.find(cap => cap.includes(query)) || this.extractQueryCaptionFromApiCaption(captionsResponse, this.subqueryBySpace(query))
+
     console.log(`caption from query - ${caption}`)
 
     return caption

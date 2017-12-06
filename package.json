@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "lodash": "^4.17.4",
     "path": "^0.12.7",
     "react": "^16.1.1",
     "react-dom": "^16.1.1",
@@ -17,7 +18,7 @@
   },
   "scripts": {
     "build": "webpack",
-    "start": "webpack-dev-server --progress --colors",
+    "start": "webpack-dev-server --devtools source-map --progress --colors",
     "test": "jest",
     "lint": "./node_modules/standard/bin/cmd.js --fix"
   },
