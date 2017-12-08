@@ -10,10 +10,10 @@ const video = (state = {}, action) => {
         return state
       }
 
-      return Object.assign({}, state, {
+      return {
+        ...state,
         caption: action.payload.caption
-
-      })
+      }
     default:
       return state
   }

@@ -1,4 +1,4 @@
-const query = (state = '', action) => {
+const snapQuery = (state = '', action) => {
   switch (action.type) {
     case 'SEARCH_SNAP':
       return action.payload
@@ -7,4 +7,4 @@ const query = (state = '', action) => {
   }
 }
 
-export default query
+export default snapQuery

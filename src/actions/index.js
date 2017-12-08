@@ -1,35 +1,10 @@
-export const searchSnap = (text) => {
-  return {
-    type: 'SEARCH_SNAP',
-    payload: text
-  }
-}
+import { addVideoSnap, addVideoCaption, filterVideos } from './actions_videos';
+import { searchSnap } from './actions_query';
+import { setUser,setProfilePictureUrl } from './actions_user';
 
-export const addVideoSnap = (url, caption) => {
-  return {
-    type: 'ADD_VIDEO',
-    payload: {
-      url,
-      caption
-    }
-  }
-}
-
-export const addVideoCaption = (url, caption) => {
-  return {
-    type: 'ADD_VIDEO_CAPTION',
-    payload: {
-      url,
-      caption
-    }
-  }
-}
-
-export const filterVideos = (url) => {
-  return {
-    type: 'FILTER_VIDEOS',
-    payload: {
-      url
-    }
-  }
-}
+export { setUser,
+        setProfilePictureUrl,
+        addVideoSnap,
+        addVideoCaption,
+        filterVideos,
+        searchSnap }

@@ -6,7 +6,7 @@ import Search from './Search'
 import youtubeApi from '../youtube_api'
 import VideoList from './Video_list'
 import VideoDetail from './Video_detail'
-import { addVideoSnap, addVideoCaption, searchSnap } from '../actions/index'
+import { addVideoSnap, addVideoCaption, searchSnap, setUser } from '../actions/index'
 import query from '../reducers/reducer_snap_query';
 
 class App extends Component {
@@ -15,26 +15,32 @@ class App extends Component {
 
     this.state = {
       selectedVideo: {},
-      videos: [],
-      authorized: true
+      videos: []
     }
 
     this.searchVideo = this.searchVideo.bind(this)
     this.searchVideoCaptions = this.searchVideoCaptions.bind(this)
+    this.storeUser = this.storeUser.bind(this);
+
     // 1. Load the JavaScript YOUTUBE client library.
-    youtubeApi.load()
+    youtubeApi.load(this.storeUser)
+  }
+
+  storeUser(user) {
+    this.props.dispatch(setUser(user))
   }
 
   searchVideo(query) {
-    this.props.dispatch(searchSnap(query))
 
     youtubeApi.searchVideo(query).then(videosFromSearch => {
+      this.props.dispatch(searchSnap(query))
+
       videosFromSearch.forEach(video => {
-        console.log(video + '__________\n')
         this.props.dispatch(addVideoSnap(video.id.videoId))
       })
 
       this.setState({
+        selectedVideo: {},
         videos: videosFromSearch
       })
     }).catch((reason) => {
@@ -97,8 +103,7 @@ class App extends Component {
           To find the video part you want, just type the matching audio track.
         </p>
 
-        <Search onSearchTermSubmit={this.searchVideo}
-          disabled={!this.state.authorized} />
+        <Search onSearchTermSubmit={this.searchVideo} />
         <VideoDetail video={this.state.selectedVideo} />
         <VideoList
           visible={this.state.videos.length > 0}

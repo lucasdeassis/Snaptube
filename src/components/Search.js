@@ -35,7 +35,7 @@ class Search extends Component {
             aria-label='Search for...' />
 
           <span className='input-group-btn'>
-            <button disabled={this.props.disabled || !this.state.input}
+            <button disabled={!this.state.input}
               onClick={() => this.props.onSearchTermSubmit(this.state.input)}
               className='btn btn-secondary'
               type='button'>Search!</button>
