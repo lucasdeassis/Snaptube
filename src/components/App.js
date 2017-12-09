@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux'
 import './App.css'
 import Navbar from './Navbar'
@@ -7,7 +8,7 @@ import youtubeApi from '../youtube_api'
 import VideoList from './Video_list'
 import VideoDetail from './Video_detail'
 import { addVideoSnap, addVideoCaption, searchSnap, setUser } from '../actions/index'
-import query from '../reducers/reducer_snap_query';
+import snapQuery from '../reducers/reducer_snap_query';
 
 class App extends Component {
   constructor(props) {
@@ -27,21 +28,16 @@ class App extends Component {
   }
 
   storeUser(user) {
-    this.props.dispatch(setUser(user))
+    this.props.setUser(user)
   }
 
   searchVideo(query) {
-
     youtubeApi.searchVideo(query).then(videosFromSearch => {
-      this.props.dispatch(searchSnap(query))
-
-      videosFromSearch.forEach(video => {
-        this.props.dispatch(addVideoSnap(video.id.videoId))
-      })
+      this.props.searchSnap(query)
 
       this.setState({
-        selectedVideo: {},
-        videos: videosFromSearch
+        videos: videosFromSearch,
+        selectedVideo: {}
       })
     }).catch((reason) => {
       console.log('Error: ' + reason)
@@ -49,6 +45,8 @@ class App extends Component {
   }
 
   searchVideoCaptions(selectedVideo) {
+    this.props.addVideoSnap(selectedVideo)
+
     youtubeApi.searchVideoCaptions(selectedVideo.id.videoId)
       .then((caption) => {
         this.getCaption(caption.id, selectedVideo);
@@ -61,9 +59,9 @@ class App extends Component {
     youtubeApi.getCaption(captionId).then(captionSbv => {
       console.log(`caption content - ${captionSbv}`);
 
-      const queryCaption = this.extractQueryCaptionFromApiCaption(captionSbv, this.props.query);
+      const queryCaption = this.extractQueryCaptionFromApiCaption(captionSbv, this.props.snapQuery);
 
-      this.props.dispatch(addVideoCaption(selectedVideo.id.videoId, queryCaption));
+      this.props.addVideoCaption(selectedVideo.id.videoId, queryCaption);
 
       this.setState({
         selectedVideo
@@ -115,11 +113,20 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = ({ snapQuery, videos }) => {
   return {
-    query: state.query,
-    videos: state.videos
+    snapQuery,
+    videos
   }
 }
 
-export default connect(mapStateToProps, null)(App)
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    addVideoSnap,
+    addVideoCaption,
+    searchSnap,
+    setUser
+  }, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)

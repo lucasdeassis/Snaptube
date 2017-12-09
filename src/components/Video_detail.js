@@ -1,10 +1,14 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-const VideoDetail = ({videos, video}) => {
+const VideoDetail = ({ videos, video }) => {
 
   const getCaptionFromStateVideo = (videos, videoId) => {
-    return videos.find(video => video.url === videoId).caption
+    const videoSnap = videos.find(videoSnap => (
+      videoSnap.video.id.videoId === videoId
+    ))
+
+    return videoSnap.caption
   }
 
   if (!video.id) {
@@ -19,6 +23,10 @@ const VideoDetail = ({videos, video}) => {
   each minute is multiplied by 60 seconds */
   const snapStartTime = () => {
     let caption = getCaptionFromStateVideo(videos, videoId)
+
+    if (!caption) {
+      return 0
+    }
 
     // split on new line and get time
     let captionTime = caption.split(/\r?\n/)[0]
@@ -50,11 +58,11 @@ const VideoDetail = ({videos, video}) => {
   )
 }
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = ({ videos }, ownProps) => {
   return {
-    videos: state.videos,
+    videos: videos,
     video: ownProps.video
   }
 }
 
-export default connect(mapStateToProps, null)(VideoDetail)
+export default connect(mapStateToProps)(VideoDetail)

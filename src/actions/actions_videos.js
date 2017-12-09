@@ -1,19 +1,19 @@
-export const addVideoSnap = (url, caption) => {
+export const addVideoSnap = (video, caption) => {
   return {
     type: 'ADD_VIDEO',
     payload: {
-      url,
+      video,
       caption
     }
   }
 }
 
 
-export const addVideoCaption = (url, caption) => {
+export const addVideoCaption = (videoUrl, caption) => {
   return {
     type: 'ADD_VIDEO_CAPTION',
     payload: {
-      url,
+      videoUrl,
       caption
     }
   }

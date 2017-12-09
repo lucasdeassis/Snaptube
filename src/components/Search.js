@@ -1,58 +1,59 @@
 import React, { Component } from 'react'
 import './Search.css'
 import { connect } from 'react-redux'
-import { searchSnap } from '../actions/index'
-import _ from 'lodash'
 
 class Search extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
-      input: ''
+      inputValue: ''
     }
 
-    this.handleChange = this.handleChange.bind(this)
+    this.onFormSubmit = this.onFormSubmit.bind(this)
+    this.onHandleChange = this.onHandleChange.bind(this)
   }
 
-  handleChange (e) {
+  onHandleChange(event) {
     this.setState({
-      input: e.target.value
+      inputValue: event.target.value
     })
   }
 
-  render () {
-    const handleChangeDebounced = _.debounce( (term) => {this.handleChange}, 300)
+  onFormSubmit(event) {
+    event.preventDefault()
 
+    this.props.onSearchTermSubmit(this.state.inputValue)
+  }
+
+  render() {
     return (
-      <div className='col-lg-6 offset-lg-3'>
+      <form onSubmit={this.onFormSubmit}
+        className='col-lg-6 offset-lg-3'>
         <div className='input-group'>
           <input type='search'
-            value={this.state.input}
-            onChange={this.handleChange}
+            value={this.state.inputValue}
+            onChange={this.onHandleChange}
             className='form-control'
             placeholder='people from phoenix are phoenicians'
             aria-label='Search for...' />
 
           <span className='input-group-btn'>
-            <button disabled={!this.state.input}
-              onClick={() => this.props.onSearchTermSubmit(this.state.input)}
+            <button disabled={!this.state.inputValue}
               className='btn btn-secondary'
-              type='button'>Search!</button>
+              type='submit'>Search!</button>
           </span>
         </div>
-      </div>
+      </form>
     )
   }
 }
 
-const mapStateToProps = (state) => {
-  // console.log(state);
-
+const mapStateToProps = ({snapQuery, videos}) => {
   return {
-    query: state.query,
-    videos: state.videos
+    snapQuery,
+    videos
   }
 }
 
-export default connect(mapStateToProps, { searchSnap })(Search)
+export default connect(mapStateToProps)(Search)
