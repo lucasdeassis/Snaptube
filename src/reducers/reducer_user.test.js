@@ -1,7 +1,7 @@
 import deepFreeze from 'deep-freeze'
-import { addVideoSnap, filterVideos, addVideoCaption, setUser } from '../actions/index'
+import { setUser } from '../actions/index'
 import { createStore } from 'redux'
-import user from './reducer_user';
+import user from './reducer_user'
 
 test('set user', () => {
   const stateBefore = {}
@@ -49,6 +49,25 @@ test('replace user', () => {
   deepFreeze(action)
 
   expect(user(stateBefore, action)).toEqual(stateAfter)
-
 })
 
+test('gets default state on unknown action', () => {
+  const stateBefore = {}
+  const action = {
+    type: 'NO_KNOWN_TYPE',
+    payload: `sqwd13edsf`
+  }
+  const stateAfter = {}
+
+  deepFreeze(stateBefore)
+  deepFreeze(action)
+
+  expect(user(stateBefore, action)).toEqual(stateAfter)
+})
+
+test('gets default state term on create store', () => {
+  const store = createStore(user)
+  const initialState = {}
+
+  expect(store.getState()).toEqual(initialState)
+})

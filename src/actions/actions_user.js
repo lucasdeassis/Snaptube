@@ -5,7 +5,6 @@ export const setUser = (user) => {
   }
 }
 
-
 export const setProfilePictureUrl = (url) => {
   return {
     type: 'SET_PROFILE_PICTURE_URL',

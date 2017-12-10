@@ -1,17 +1,15 @@
 import React, { Component } from 'react'
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux'
 import './App.css'
-import Navbar from './Navbar'
+import Navbar from '../components/Navbar'
 import Search from './Search'
 import youtubeApi from '../youtube_api'
-import VideoList from './Video_list'
-import VideoDetail from './Video_detail'
+import VideoList from '../components/Video_list'
+import VideoDetail from '../components/Video_detail'
 import { addVideoSnap, addVideoCaption, searchSnap, setUser } from '../actions/index'
-import snapQuery from '../reducers/reducer_snap_query';
 
 class App extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -21,17 +19,17 @@ class App extends Component {
 
     this.searchVideo = this.searchVideo.bind(this)
     this.searchVideoCaptions = this.searchVideoCaptions.bind(this)
-    this.storeUser = this.storeUser.bind(this);
+    this.storeUser = this.storeUser.bind(this)
 
     // 1. Load the JavaScript YOUTUBE client library.
     youtubeApi.load(this.storeUser)
   }
 
-  storeUser(user) {
+  storeUser (user) {
     this.props.setUser(user)
   }
 
-  searchVideo(query) {
+  searchVideo (query) {
     youtubeApi.searchVideo(query).then(videosFromSearch => {
       this.props.searchSnap(query)
 
@@ -44,44 +42,44 @@ class App extends Component {
     })
   }
 
-  searchVideoCaptions(selectedVideo) {
+  searchVideoCaptions (selectedVideo) {
     this.props.addVideoSnap(selectedVideo)
 
     youtubeApi.searchVideoCaptions(selectedVideo.id.videoId)
       .then((caption) => {
-        this.getCaption(caption.id, selectedVideo);
+        this.getCaption(caption.id, selectedVideo)
       }).catch((reason) => {
         console.log('Error: ' + reason)
       })
   }
 
-  getCaption(captionId, selectedVideo) {
+  getCaption (captionId, selectedVideo) {
     youtubeApi.getCaption(captionId).then(captionSbv => {
-      console.log(`caption content - ${captionSbv}`);
+      console.log(`caption content - ${captionSbv}`)
 
-      const queryCaption = this.extractQueryCaptionFromApiCaption(captionSbv, this.props.snapQuery);
+      const queryCaption = this.extractQueryCaptionFromApiCaption(captionSbv, this.props.snapQuery)
 
-      this.props.addVideoCaption(selectedVideo.id.videoId, queryCaption);
+      this.props.addVideoCaption(selectedVideo.id.videoId, queryCaption)
 
       this.setState({
         selectedVideo
-      });
+      })
     }).catch((reason) => {
-      console.log('Error: ' + reason);
-    });
+      console.log('Error: ' + reason)
+    })
   }
 
-  subqueryBySpace(query) {
-    const noSpaces = () => query.split(' ').length === 1;
+  subqueryBySpace (query) {
+    const noSpaces = () => query.split(' ').length === 1
 
     if (noSpaces()) {
       return query
     } else {
-      return query.substring(0, query.lastIndexOf(' '));
+      return query.substring(0, query.lastIndexOf(' '))
     }
   }
 
-  extractQueryCaptionFromApiCaption(captionsResponse, query) {
+  extractQueryCaptionFromApiCaption (captionsResponse, query) {
     let captionList = captionsResponse.split(/\r?\n{2}/)
 
     const caption = captionList.find(cap => cap.includes(query)) || this.extractQueryCaptionFromApiCaption(captionsResponse, this.subqueryBySpace(query))
@@ -91,7 +89,7 @@ class App extends Component {
     return caption
   }
 
-  render() {
+  render () {
     return (
       <div className='App'>
         <Navbar />
@@ -120,13 +118,12 @@ const mapStateToProps = ({ snapQuery, videos }) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({
+export default connect(
+  mapStateToProps,
+  {
     addVideoSnap,
     addVideoCaption,
     searchSnap,
     setUser
-  }, dispatch)
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+  }
+)(App)

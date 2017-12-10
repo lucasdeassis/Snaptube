@@ -1,7 +1,7 @@
 import React from 'react'
 import VideoListItem from './Video_list_item'
 
-const VideoList = props => {
+const VideoList = (props) => {
   const videoItems = props.videos.map(video => {
     return <VideoListItem
       onVideoSelect={props.onVideoSelect}
@@ -11,8 +11,8 @@ const VideoList = props => {
   })
 
   return (
-    <div className="video-list-group list-group align-items-center">
-      <ul className="col-lg-8 col-md-12">
+    <div className='video-list-group list-group align-items-center'>
+      <ul className='col-lg-8 col-md-12'>
         {videoItems}
       </ul>
     </div>

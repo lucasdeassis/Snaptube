@@ -7,7 +7,7 @@ const videos = (state = [], action) => {
     case 'ADD_VIDEO_CAPTION':
       return state.map(v => video(v, action))
     case 'FILTER_VIDEOS':
-      return state.filter(video => video.url === action.payload.url)
+      return state.filter(videoSnap => videoSnap.video.id.videoId === action.payload.videoUrl)
     default:
       return state
   }

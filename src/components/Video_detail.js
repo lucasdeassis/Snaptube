@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 const VideoDetail = ({ videos, video }) => {
-
   const getCaptionFromStateVideo = (videos, videoId) => {
     const videoSnap = videos.find(videoSnap => (
       videoSnap.video.id.videoId === videoId
@@ -15,7 +14,7 @@ const VideoDetail = ({ videos, video }) => {
     return <div />
   }
 
-  const videoId = video.id.videoId;
+  const videoId = video.id.videoId
 
   /* convert format "0:00:07.799,0:00:10.559" to start time in seconds only
   ex: convert `0:04:09.939,0:04:13.689
@@ -40,7 +39,7 @@ const VideoDetail = ({ videos, video }) => {
     // multiply each part of the time by its corresponding sec value
     captionTime = (captionTime[0] * 3600 + captionTime[1] * 60 + parseInt(captionTime[2]))
 
-    return captionTime || 0;
+    return captionTime || 0
   }
 
   const url = `https://www.youtube.com/embed/${videoId}?start=${snapStartTime()}`

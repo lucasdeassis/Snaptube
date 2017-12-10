@@ -1,21 +1,21 @@
-import youtubeApi from './youtube_api';
+import youtubeApi from './youtube_api'
 
 const oauth2 = {
   googleAuth: {},
 
-  setSigninStatus() {
+  setSigninStatus () {
     const user = this.googleAuth.currentUser.get()
     youtubeApi.isAuthorized = this.userHasGrantedScopes(user)
     if (!youtubeApi.isAuthorized) {
       this.googleAuth.signIn()
     }
   },
-  updateSigninStatus(signedIn) {
-    if(!signedIn) {
+  updateSigninStatus (signedIn) {
+    if (!signedIn) {
 
     }
   },
-  start(currentUserListener) {
+  start (currentUserListener) {
     // 2. Initialize the JavaScript client library.
     window.gapi.client.init({
       'apiKey': 'AIzaSyBsSxXHTV-VudZeNMaAFgSy6kZCH8r4ppU',
@@ -24,12 +24,11 @@ const oauth2 = {
       'clientId': '475996322746-fd6flkrafpmf0bvlat4pua3s75phf2o4.apps.googleusercontent.com',
       'scope': 'https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/userinfo.profile'
     }).then(this.onAuthInit.bind(this, currentUserListener))
-
   },
-  onAuthInit(currentUserListener) {
+  onAuthInit (currentUserListener) {
     this.googleAuth = window.gapi.auth2.getAuthInstance()
 
-    //https://developers.google.com/identity/sign-in/web/reference
+    // https://developers.google.com/identity/sign-in/web/reference
     this.googleAuth.currentUser.listen(
       this.updateUser.bind(this, this.googleAuth.currentUser.get(), currentUserListener))
 
@@ -39,7 +38,7 @@ const oauth2 = {
     // Handle initial sign-in state. (Determine if user is already signed in.)
     this.setSigninStatus()
   },
-  updateUser(user, currentUserListener) {
+  updateUser (user, currentUserListener) {
     if (this.userHasGrantedScopes(user)) {
       const profile = user.getBasicProfile()
 
@@ -52,13 +51,11 @@ const oauth2 = {
     } else {
       currentUserListener({})
     }
-
   },
-  userHasGrantedScopes(user) {
+  userHasGrantedScopes (user) {
     return user.hasGrantedScopes(
     'https://www.googleapis.com/auth/youtube.force-ssl ' +
-    'https://www.googleapis.com/auth/userinfo.profile');
-
+    'https://www.googleapis.com/auth/userinfo.profile')
   }
 }
 

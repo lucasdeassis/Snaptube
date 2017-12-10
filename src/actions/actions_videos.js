@@ -8,7 +8,6 @@ export const addVideoSnap = (video, caption) => {
   }
 }
 
-
 export const addVideoCaption = (videoUrl, caption) => {
   return {
     type: 'ADD_VIDEO_CAPTION',
@@ -19,12 +18,11 @@ export const addVideoCaption = (videoUrl, caption) => {
   }
 }
 
-
-export const filterVideos = (url) => {
+export const filterVideos = (videoUrl) => {
   return {
     type: 'FILTER_VIDEOS',
     payload: {
-      url
+      videoUrl
     }
   }
 }

@@ -3,7 +3,7 @@ import './Search.css'
 import { connect } from 'react-redux'
 
 class Search extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -14,19 +14,19 @@ class Search extends Component {
     this.onHandleChange = this.onHandleChange.bind(this)
   }
 
-  onHandleChange(event) {
+  onHandleChange (event) {
     this.setState({
       inputValue: event.target.value
     })
   }
 
-  onFormSubmit(event) {
+  onFormSubmit (event) {
     event.preventDefault()
 
     this.props.onSearchTermSubmit(this.state.inputValue)
   }
 
-  render() {
+  render () {
     return (
       <form onSubmit={this.onFormSubmit}
         className='col-lg-6 offset-lg-3'>
