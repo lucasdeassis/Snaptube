@@ -1,6 +1,8 @@
+import { ADD_SNAP_QUERY } from '../actions/constants/snap_query_action_types'
+
 const snapQuery = (state = '', action) => {
   switch (action.type) {
-    case 'SEARCH_SNAP':
+    case ADD_SNAP_QUERY:
       return action.payload
     default:
       return state

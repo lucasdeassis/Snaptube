@@ -1,11 +1,11 @@
 import snapQuery from './reducer_snap_query'
 import deepFreeze from 'deep-freeze'
 import { createStore } from 'redux'
-import { searchSnap } from '../actions/index'
+import { addSnapQuery } from '../actions/index'
 
 test('search term', () => {
   const stateBefore = ''
-  const action = searchSnap('you shall not pass')
+  const action = addSnapQuery('you shall not pass')
   const stateAfter = 'you shall not pass'
 
   deepFreeze(stateBefore)

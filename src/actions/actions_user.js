@@ -1,8 +1,9 @@
 import youtubeApi from '../youtube_api'
+import * as actionTypes from './constants/user_action_types'
 
 export const setUser = (user) => {
   return {
-    type: 'SET_USER',
+    type: actionTypes.SET_USER,
     payload: user
   }
 }
@@ -20,7 +21,7 @@ export const loadUser = (currentUserListener) => {
   })
 
   return {
-    type: 'SET_USER',
+    type: actionTypes.SET_USER,
     payload: request
   }
 
@@ -28,7 +29,7 @@ export const loadUser = (currentUserListener) => {
 
 export const setProfilePictureUrl = (url) => {
   return {
-    type: 'SET_PROFILE_PICTURE_URL',
+    type: actionTypes.SET_PROFILE_PICTURE_URL,
     payload: url
   }
 }

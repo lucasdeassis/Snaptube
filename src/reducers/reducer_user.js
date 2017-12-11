@@ -1,8 +1,10 @@
+import * as actionTypes from '../actions/constants/user_action_types'
+
 const user = (state = {}, action) => {
   switch (action.type) {
-    case 'SET_USER':
+    case actionTypes.SET_USER:
       return action.payload
-    case 'SET_PROFILE_PICTURE_URL':
+    case actionTypes.SET_PROFILE_PICTURE_URL:
       return {
         ...state,
         imageUrl: action.payload
