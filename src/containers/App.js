@@ -3,10 +3,9 @@ import { connect } from 'react-redux'
 import './App.css'
 import Navbar from '../components/Navbar'
 import Search from './Search'
-import youtubeApi from '../youtube_api'
 import VideoList from '../components/Video_list'
 import VideoDetail from '../components/Video_detail'
-import { addVideoSnap, addVideoCaption, searchSnap, setUser, selectVideo } from '../actions/index'
+import { addVideoSnap, addVideoCaption, searchSnap, setUser, loadUser, selectVideo } from '../actions/index'
 
 class App extends Component {
   constructor (props) {
@@ -18,20 +17,14 @@ class App extends Component {
 
     this.searchVideo = this.searchVideo.bind(this)
     this.searchVideoCaptions = this.searchVideoCaptions.bind(this)
-    this.storeUser = this.storeUser.bind(this)
 
-    // 1. Load the JavaScript YOUTUBE client library.
-    youtubeApi.load(this.storeUser)
-  }
-
-  storeUser (user) {
-    this.props.setUser(user)
+    this.props.loadUser((user) => this.props.setUser(user))
   }
 
   searchVideo (query) {
-    youtubeApi.searchVideo(query).then(videosFromSearch => {
-      this.props.searchSnap(query)
+    this.props.searchSnap(query)
 
+    youtubeApi.searchVideo(query).then(videosFromSearch => {
       this.setState({
         videos: videosFromSearch
       })
@@ -107,8 +100,9 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = ({ snapQuery, videos }) => {
+const mapStateToProps = ({ user, snapQuery, videos }) => {
   return {
+    user,
     snapQuery,
     videos
   }
@@ -121,6 +115,7 @@ export default connect(
     addVideoCaption,
     searchSnap,
     setUser,
+    loadUser,
     selectVideo
   }
 )(App)

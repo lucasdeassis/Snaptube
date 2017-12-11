@@ -1,8 +1,9 @@
 import { addVideoSnap, addVideoCaption, filterVideos, selectVideo } from './actions_videos'
 import { searchSnap } from './actions_query'
-import { setUser, setProfilePictureUrl } from './actions_user'
+import { setUser, loadUser, setProfilePictureUrl } from './actions_user'
 
 export { setUser,
+        loadUser,
         setProfilePictureUrl,
         addVideoSnap,
         addVideoCaption,

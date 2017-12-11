@@ -27,6 +27,11 @@ const oauth2 = {
   },
   onAuthInit (currentUserListener) {
     this.googleAuth = window.gapi.auth2.getAuthInstance()
+    const currentUser = this.googleAuth.currentUser.get()
+
+    if(currentUser.isSignedIn()) {
+      this.updateUser(currentUser, currentUserListener)
+    }
 
     // https://developers.google.com/identity/sign-in/web/reference
     this.googleAuth.currentUser.listen(
