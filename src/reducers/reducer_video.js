@@ -1,7 +1,7 @@
 /**
  *
  * @param {*} state
- * {
+ * video : {
   "kind": "youtube#searchResult",
   "etag": etag,
   "id": {
@@ -39,6 +39,28 @@ const video = (state = {}, action) => {
       return {
         ...state,
         caption: action.payload.caption
+      }
+    case 'SELECT_VIDEO':
+      if (!state) {
+        return state
+      }
+
+      if (state.video.id.videoId !== action.payload.videoUrl) {
+        return {
+          ...state,
+          video: {
+            ...state.video,
+            [action.payload.selected.property]: false
+          }
+        }
+      }
+
+      return {
+        ...state,
+        video: {
+          ...state.video,
+          [action.payload.selected.property]: action.payload.selected.value
+        }
       }
     default:
       return state

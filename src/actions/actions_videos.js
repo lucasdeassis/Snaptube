@@ -26,3 +26,16 @@ export const filterVideos = (videoUrl) => {
     }
   }
 }
+
+export const selectVideo = (videoUrl, selected) => {
+  return {
+    type: 'SELECT_VIDEO',
+    payload: {
+      videoUrl,
+      selected: {
+        property: 'selected',
+        value: selected
+      }
+    }
+  }
+}

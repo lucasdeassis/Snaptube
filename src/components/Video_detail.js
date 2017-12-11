@@ -1,34 +1,26 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-const VideoDetail = ({ videos, video }) => {
-  const getCaptionFromStateVideo = (videos, videoId) => {
-    const videoSnap = videos.find(videoSnap => (
-      videoSnap.video.id.videoId === videoId
+const VideoDetail = ({ videos }) => {
+  const videoSnapSelected = (videos) => {
+    return videos.find(videoSnap => (
+      videoSnap.video.selected
     ))
-
-    return videoSnap.caption
   }
 
-  if (!video.id) {
+  const videoSnap = videoSnapSelected(videos)
+
+  if (!videoSnap) {
     return <div />
   }
-
-  const videoId = video.id.videoId
 
   /* convert format "0:00:07.799,0:00:10.559" to start time in seconds only
   ex: convert `0:04:09.939,0:04:13.689
   heavily we're acknowledging it right" to 249`
   each minute is multiplied by 60 seconds */
   const snapStartTime = () => {
-    let caption = getCaptionFromStateVideo(videos, videoId)
-
-    if (!caption) {
-      return 0
-    }
-
     // split on new line and get time
-    let captionTime = caption.split(/\r?\n/)[0]
+    let captionTime = videoSnap.caption.split(/\r?\n/)[0]
 
     // get full start time
     captionTime = captionTime.split(',')[0]
@@ -42,7 +34,7 @@ const VideoDetail = ({ videos, video }) => {
     return captionTime || 0
   }
 
-  const url = `https://www.youtube.com/embed/${videoId}?start=${snapStartTime()}`
+  const url = `https://www.youtube.com/embed/${videoSnap.video.id.videoId}?start=${snapStartTime()}`
 
   return (
     <div className='video-detail col-md-8 container'>
@@ -50,17 +42,16 @@ const VideoDetail = ({ videos, video }) => {
         <iframe title='video embed' className='embed-responsive-item' src={url} />
       </div>
       <div className='details'>
-        <div>{video.snippet.title}</div>
-        <div>{video.snippet.description}</div>
+        <div>{videoSnap.video.snippet.title}</div>
+        <div>{videoSnap.video.snippet.description}</div>
       </div>
     </div>
   )
 }
 
-const mapStateToProps = ({ videos }, ownProps) => {
+const mapStateToProps = ({ videos }) => {
   return {
-    videos: videos,
-    video: ownProps.video
+    videos
   }
 }
 

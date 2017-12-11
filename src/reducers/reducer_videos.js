@@ -8,6 +8,8 @@ const videos = (state = [], action) => {
       return state.map(v => video(v, action))
     case 'FILTER_VIDEOS':
       return state.filter(videoSnap => videoSnap.video.id.videoId === action.payload.videoUrl)
+    case 'SELECT_VIDEO':
+      return state.map(v => video(v, action))
     default:
       return state
   }

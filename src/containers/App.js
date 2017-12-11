@@ -6,14 +6,13 @@ import Search from './Search'
 import youtubeApi from '../youtube_api'
 import VideoList from '../components/Video_list'
 import VideoDetail from '../components/Video_detail'
-import { addVideoSnap, addVideoCaption, searchSnap, setUser } from '../actions/index'
+import { addVideoSnap, addVideoCaption, searchSnap, setUser, selectVideo } from '../actions/index'
 
 class App extends Component {
   constructor (props) {
     super(props)
 
     this.state = {
-      selectedVideo: {},
       videos: []
     }
 
@@ -34,8 +33,7 @@ class App extends Component {
       this.props.searchSnap(query)
 
       this.setState({
-        videos: videosFromSearch,
-        selectedVideo: {}
+        videos: videosFromSearch
       })
     }).catch((reason) => {
       console.log('Error: ' + reason)
@@ -60,10 +58,8 @@ class App extends Component {
       const queryCaption = this.extractQueryCaptionFromApiCaption(captionSbv, this.props.snapQuery)
 
       this.props.addVideoCaption(selectedVideo.id.videoId, queryCaption)
+      this.props.selectVideo(selectedVideo.id.videoId, true)
 
-      this.setState({
-        selectedVideo
-      })
     }).catch((reason) => {
       console.log('Error: ' + reason)
     })
@@ -100,7 +96,7 @@ class App extends Component {
         </p>
 
         <Search onSearchTermSubmit={this.searchVideo} />
-        <VideoDetail video={this.state.selectedVideo} />
+        <VideoDetail />
         <VideoList
           visible={this.state.videos.length > 0}
           onVideoSelect={this.searchVideoCaptions}
@@ -124,6 +120,7 @@ export default connect(
     addVideoSnap,
     addVideoCaption,
     searchSnap,
-    setUser
+    setUser,
+    selectVideo
   }
 )(App)
