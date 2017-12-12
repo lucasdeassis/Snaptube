@@ -1,12 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+const videoSnapSelected = (videos) => {
+  return videos.find(videoSnap => (
+    videoSnap.video.selected
+  ))
+}
+
 const VideoDetail = ({ videos }) => {
-  const videoSnapSelected = (videos) => {
-    return videos.find(videoSnap => (
-      videoSnap.video.selected
-    ))
-  }
 
   const videoSnap = videoSnapSelected(videos)
 
