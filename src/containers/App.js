@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
+import youtubeApi from '../youtube_api'
 import { connect } from 'react-redux'
 import './App.css'
 import Navbar from '../components/Navbar'
 import Search from './Search'
 import VideoList from '../components/Video_list'
 import VideoDetail from '../components/Video_detail'
-import { addVideoSnap, addVideoCaption, searchSnap, setUser, loadUser, selectVideo } from '../actions/index'
-
+import { addVideoSnap, addVideoCaption, addSnapQuery, setUser, loadUser, selectVideo } from '../actions/index'
 class App extends Component {
   constructor (props) {
     super(props)
@@ -21,10 +21,10 @@ class App extends Component {
     this.props.loadUser((user) => this.props.setUser(user))
   }
 
-  searchVideo (query) {
-    this.props.searchSnap(query)
+  searchVideo (textQuery) {
+    this.props.addSnapQuery(textQuery)
 
-    youtubeApi.searchVideo(query).then(videosFromSearch => {
+    youtubeApi.searchVideo(textQuery).then(videosFromSearch => {
       this.setState({
         videos: videosFromSearch
       })
@@ -113,7 +113,7 @@ export default connect(
   {
     addVideoSnap,
     addVideoCaption,
-    searchSnap,
+    addSnapQuery,
     setUser,
     loadUser,
     selectVideo
