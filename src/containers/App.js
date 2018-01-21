@@ -6,13 +6,22 @@ import Navbar from '../components/Navbar'
 import Search from './Search'
 import VideoList from '../components/Video_list'
 import VideoDetail from '../components/Video_detail'
-import { addVideoSnap, addVideoCaption, addSnapQuery, setUser, loadUser, selectVideo } from '../actions/index'
+import {
+  addVideoSnap,
+  addVideoCaption,
+  addSnapQuery,
+  setUser,
+  loadUser,
+  selectVideo
+} from '../actions/index'
+
 class App extends Component {
   constructor (props) {
     super(props)
 
     this.state = {
-      videos: []
+      videos: [],
+      error: ''
     }
 
     this.searchVideo = this.searchVideo.bind(this)
@@ -29,7 +38,9 @@ class App extends Component {
         videos: videosFromSearch
       })
     }).catch((reason) => {
-      console.log('Error: ' + reason)
+      this.setState({
+        error: reason.message
+      })
     })
   }
 
@@ -40,21 +51,22 @@ class App extends Component {
       .then((caption) => {
         this.getCaption(caption.id, selectedVideo)
       }).catch((reason) => {
-        console.log('Error: ' + reason)
+        this.setState({
+          error: reason.message
+        })
       })
   }
 
   getCaption (captionId, selectedVideo) {
     youtubeApi.getCaption(captionId).then(captionSbv => {
-      console.log(`caption content - ${captionSbv}`)
-
       const queryCaption = this.extractQueryCaptionFromApiCaption(captionSbv, this.props.snapQuery)
 
       this.props.addVideoCaption(selectedVideo.id.videoId, queryCaption)
       this.props.selectVideo(selectedVideo.id.videoId, true)
-
     }).catch((reason) => {
-      console.log('Error: ' + reason)
+      this.setState({
+        error: reason.message
+      })
     })
   }
 
@@ -71,17 +83,38 @@ class App extends Component {
   extractQueryCaptionFromApiCaption (captionsResponse, query) {
     let captionList = captionsResponse.split(/\r?\n{2}/)
 
-    const caption = captionList.find(cap => cap.includes(query)) || this.extractQueryCaptionFromApiCaption(captionsResponse, this.subqueryBySpace(query))
-
-    console.log(`caption from query - ${caption}`)
+    const caption = captionList.find(cap => cap.includes(query)) ||
+      this.extractQueryCaptionFromApiCaption(captionsResponse, this.subqueryBySpace(query))
 
     return caption
+  }
+
+  onCloseAlert () {
+    this.setState({
+      error: ''
+    })
+  }
+
+  renderErrorAlert () {
+    return (
+      <div
+        className={`alert alert-danger alert-dismissible fade show ${this.state.error ? 'block-display' : 'none-display'}`}
+        role='alert'>
+        <span className='error-message'> {this.state.error} </span>
+        <button type='button' onClick={this.onCloseAlert.bind(this)} className='close' aria-label='Close'>
+          <span aria-hidden='true'>&times;</span>
+        </button>
+      </div>
+    )
   }
 
   render () {
     return (
       <div className='App'>
+
         <Navbar />
+
+        {this.renderErrorAlert()}
 
         <p className='App-intro'>
           Watch specific youtube video pieces.
@@ -95,6 +128,7 @@ class App extends Component {
           onVideoSelect={this.searchVideoCaptions}
           videos={this.state.videos}
         />
+
       </div>
     )
   }

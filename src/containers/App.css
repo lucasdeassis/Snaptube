@@ -15,4 +15,15 @@ h1 {
   font-size: medium;
 }
 
+.block-display {
+  display: block;
+}
 
+.none-display {
+  display: none;
+}
+
+.error-message {
+  display: block;
+  width: 95%;
+}
