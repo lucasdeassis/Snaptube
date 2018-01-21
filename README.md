@@ -10,10 +10,10 @@ In the project directory:
 run
 
 ```
-npm start
+npm run dev
 ```
 
 ### Production
 
-[https://snaptube.herokuapp.com/]
+https://snaptube.herokuapp.com/
 
