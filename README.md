@@ -4,8 +4,16 @@ This project allows you to see the specific youtube video part from which you've
 
 ## Running
 
-In the project directory, you can run:
+In the project directory:
+
+### Development
+run
 
 ```
 npm start
 ```
+
+### Production
+
+[https://snaptube.herokuapp.com/]
+
