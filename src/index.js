@@ -5,13 +5,11 @@ import App from './containers/App'
 import { createStore, applyMiddleware } from 'redux'
 import rootReducer from './reducers/index'
 import { Provider } from 'react-redux'
-import logger from 'redux-logger'
 import ReduxPromise from 'redux-promise'
 
 let store = createStore(
   rootReducer,
-  applyMiddleware(ReduxPromise),
-  applyMiddleware(logger)
+  applyMiddleware(ReduxPromise)
 )
 
 render(
