@@ -10,7 +10,6 @@
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.2.2",
     "redux": "^3.7.2",
-    "redux-logger": "^3.0.6",
     "redux-promise": "^0.5.3",
     "regenerator-runtime": "^0.11.0",
     "url-loader": "^0.6.2",
@@ -20,9 +19,11 @@
   },
   "scripts": {
     "build": "webpack",
-    "start": "webpack-dev-server --devtool source-map --progress --colors",
+    "dev": "webpack-dev-server --devtool source-map --progress --colors",
     "test": "jest",
-    "lint": "./node_modules/standard/bin/cmd.js --fix"
+    "lint": "./node_modules/standard/bin/cmd.js --fix",
+    "postinstall": "webpack -p",
+    "start": "node server.js"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
