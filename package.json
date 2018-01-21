@@ -2,6 +2,9 @@
   "name": "snap-tube",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "8.9.x"
+  },
   "dependencies": {
     "lodash": "^4.17.4",
     "path": "^0.12.7",
