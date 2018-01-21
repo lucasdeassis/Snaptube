@@ -14,7 +14,7 @@ export const loadUser = (currentUserListener) => {
     youtubeApi.load((user) => {
       resolve(user)
 
-      if(currentUserListener) {
+      if (currentUserListener) {
         currentUserListener(user)
       }
     })
@@ -24,7 +24,6 @@ export const loadUser = (currentUserListener) => {
     type: actionTypes.SET_USER,
     payload: request
   }
-
 }
 
 export const setProfilePictureUrl = (url) => {

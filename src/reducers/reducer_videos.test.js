@@ -2,7 +2,7 @@ import deepFreeze from 'deep-freeze'
 import { addVideoSnap, filterVideos, addVideoCaption } from '../actions/index'
 import { createStore } from 'redux'
 import videos from './reducer_videos'
-import { selectVideo } from '../actions/actions_videos';
+import { selectVideo } from '../actions/actions_videos'
 
 const videoTestData = {
   kind: 'youtube#searchResult',
@@ -335,5 +335,3 @@ test('set selected to existing video setting other videos unselected', () => {
 
   expect(videos(stateBefore, action)).toEqual(stateAfter)
 })
-
-

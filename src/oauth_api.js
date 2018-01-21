@@ -29,7 +29,7 @@ const oauth2 = {
     this.googleAuth = window.gapi.auth2.getAuthInstance()
     const currentUser = this.googleAuth.currentUser.get()
 
-    if(currentUser.isSignedIn()) {
+    if (currentUser.isSignedIn()) {
       this.updateUser(currentUser, currentUserListener)
     }
 

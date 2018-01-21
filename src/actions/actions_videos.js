@@ -1,4 +1,3 @@
-import youtubeApi from '../youtube_api'
 import * as actionTypes from './constants/videos_action_types'
 
 export const addVideoSnap = (video, caption) => {

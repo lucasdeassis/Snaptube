@@ -3,4 +3,3 @@ const ADD_SNAP_QUERY = 'ADD_SNAP_QUERY'
 export {
   ADD_SNAP_QUERY
 }
-

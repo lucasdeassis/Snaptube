@@ -8,7 +8,6 @@ const videoSnapSelected = (videos) => {
 }
 
 const VideoDetail = ({ videos }) => {
-
   const videoSnap = videoSnapSelected(videos)
 
   if (!videoSnap) {
